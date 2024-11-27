@@ -113,7 +113,7 @@ app.get('/api/staff',(req,res) => {
         // Get dep name, use 'unknown' if it doesn't exist
         const departmentName = matchingDepartment ? matchingDepartment.name : 'Unknown';
 
-        // Create new object with original staff info, now including dep name
+        // Create new object with original staff data, now including dep name
         return {
             // id: staff.id,                    # expanded list
             // name: staff.name,
@@ -160,18 +160,18 @@ app.post('/api/staff',(req,res) => {
 
     // Basic validation for empty fields ?
     if (!newStaff.name || !newStaff.phone || !newStaff.department) {
-        return res.status(404).json({
-            message: "Missing required fields."
+        return res.status(400).json({
+            message: "Missing required fields: name, phone, and department are required"
         });
     }
 
     // Validate department exists ?
-    // Some() -- at least one element in array passes the test provided in func
-    // returns TRUE if it finds an elemensdfsskdlsgjlk
+    // Some() -- at least one element in array passes the test provided in func (so, if d.id matches newStaff dep id)
+    // returns TRUE if callbackFn returns a truthy value for array element
     const DepartmentExists = departments.some( d => d.id === newStaff.department)
     if (!DepartmentExists){
         return res.status(400).json({ 
-            message: "invalid dep id"
+            message: "Invalid department ID"
         });
     };
 
@@ -181,8 +181,9 @@ app.post('/api/staff',(req,res) => {
 
     const staffToAdd = {
         id: newId,
-        name: newStaff.phone,
-        phone: newStaff.department,
+        name: newStaff.name,
+        phone: newStaff.phone,
+        department: newStaff.department,
         address: {
             street: newStaff.address?.street || "",
             city: newStaff.address?.city || "",
@@ -196,7 +197,7 @@ app.post('/api/staff',(req,res) => {
     staffData.push(staffToAdd);
 
     // Show new staff data, including department name
-    const matchingDepartment = departments.find(dept => dept.id === staff.department)
+    const matchingDepartment = departments.find(dept => dept.id === newStaff.department) 
     const departmentName = matchingDepartment ? matchingDepartment.name : 'Unknown';
 
     res.status(201).json({
@@ -205,4 +206,63 @@ app.post('/api/staff',(req,res) => {
     });
 });
 
-// PUT for staff
+// PUT for updating existing staff
+app.put('/api/staff/:staffId', (req,res) => {
+    let staffId = parseInt(req.params.staffId);
+
+    // Find the staff member's index in staff data array
+    const staffMemberIndex = staffData.findIndex(s => s.id === staffId); // changed from find -> findIndex
+
+    // Check if staff exists
+    if (staffMemberIndex === -1) {              // findIndex() returns -1 if callbackFn never returns a truthy value 
+        return res.status(404).json({           // bc valid req, but no ID found
+            message: "staff member not found"
+        });
+    }
+
+    // Get update data from request body
+    let updateStaffData = req.body;
+
+    // Basic validation
+    if (!updateStaffData.name || !updateStaffData.phone || !updateStaffData.department){
+        return res.status(400).json({
+            message: "Missing required fields: name, phone, and department are required."
+        }); 
+    }
+
+    // Validate department exists -- reused
+    const DepartmentExists = departments.some( d => d.id === updateStaffData.department)
+    if (!DepartmentExists){
+        return res.status(400).json({ 
+            message: "invalid dep id"
+        });
+    };
+
+    // Create updated staff object, SAME ID!!!!
+    const updatedStaffMember = {
+        id: staffId,
+        name: updateStaffData.name,
+        phone: updateStaffData.phone,
+        department: updateStaffData.department,
+        address: {
+            street: updateStaffData.address?.street || staffData[staffMemberIndex].address.street,
+            city: updateStaffData.address?.city || staffData[staffMemberIndex].address.city,
+            state: updateStaffData.address?.state || staffData[staffMemberIndex].address.state,
+            postcode: updateStaffData.address?.postcode || staffData[staffMemberIndex].address.postcode,
+            country: updateStaffData.address?.country || staffData[staffMemberIndex].address.country
+        }
+    };
+
+    // Update the staff member in the array
+    staffData[staffMemberIndex] = updatedStaffMember;
+    
+    // Get dep name again
+    const matchingDepartment = departments.find(dept => dept.id === updatedStaffMember.department);
+    const departmentName = matchingDepartment ? matchingDepartment.name : 'Unknown';
+
+    // Return the updated staff member w res.json
+    res.json({
+        ...updatedStaffMember,
+        departmentName
+    });
+});
