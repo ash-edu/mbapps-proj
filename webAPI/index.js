@@ -1,5 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+app.listen(3000, function(){
+    console.log("server now started")
+});
 
 /*
 What to work on:
@@ -17,15 +25,6 @@ let bid = req.params.bookid;
 //Getting data from POST that was sent via BODY
 let obj = req.body;
 */
-
-const app = express();
-
-app.use(express.json());
-app.use(cors());
-
-app.listen(3000, function(){
-    console.log("server now started")
-});
 
 let staffData = [
     {
@@ -130,7 +129,7 @@ app.get('/api/staff',(req,res) => {
     res.json(staffWithDeptName) 
 });
 
-// GET for a specific staff member
+// GET for a specific staff member, create endpoint at specific staffId
 app.get('/api/staff/:staffId',(req,res) => {
     let staffId = parseInt(req.params.staffId);
     const matchingStaff = staffData.find( s => s.id === staffId);
@@ -153,3 +152,57 @@ app.get('/api/staff/:staffId',(req,res) => {
         res.status(404).json({ message: "Staff member not found"});
     }
 });
+
+// POST for adding new staff member
+app.post('/api/staff',(req,res) => {
+    // Get new staff data from body
+    let newStaff = req.body;
+
+    // Basic validation for empty fields ?
+    if (!newStaff.name || !newStaff.phone || !newStaff.department) {
+        return res.status(404).json({
+            message: "Missing required fields."
+        });
+    }
+
+    // Validate department exists ?
+    // Some() -- at least one element in array passes the test provided in func
+    // returns TRUE if it finds an elemensdfsskdlsgjlk
+    const DepartmentExists = departments.some( d => d.id === newStaff.department)
+    if (!DepartmentExists){
+        return res.status(400).json({ 
+            message: "invalid dep id"
+        });
+    };
+
+    // Generate new staff id ?
+    // return largest num found in staff id array + 1!
+    const newId = Math.max(...staffData.map(staff => staff.id)) + 1;
+
+    const staffToAdd = {
+        id: newId,
+        name: newStaff.phone,
+        phone: newStaff.department,
+        address: {
+            street: newStaff.address?.street || "",
+            city: newStaff.address?.city || "",
+            state: newStaff.address?.state || "",
+            postcode: newStaff.address?.postcode || "",
+            country: newStaff.address?.country || "Australia"   
+        }
+    };
+
+    // Add to staff array
+    staffData.push(staffToAdd);
+
+    // Show new staff data, including department name
+    const matchingDepartment = departments.find(dept => dept.id === staff.department)
+    const departmentName = matchingDepartment ? matchingDepartment.name : 'Unknown';
+
+    res.status(201).json({
+        ...staffToAdd,
+        departmentName
+    });
+});
+
+// PUT for staff
