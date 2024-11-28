@@ -1,13 +1,14 @@
 import React from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Touchable, TouchableOpacity } from 'react-native';
 
 //  screens
 import StaffListScreen from './screens/StaffListScreen';
 import StaffDetailScreen from './screens/StaffDetailScreen';
 import AddStaffScreen from './screens/AddStaffScreen';
+import UpdateStaffScreen from './screens/UpdateStaffScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,13 @@ export default function App() {
           component={AddStaffScreen}
           options={{
             title: 'Add Staff Member'
+          }}
+        />
+                <Stack.Screen
+          name="AddStaff" 
+          component={UpdateStaffScreen}
+          options={{
+            title: 'Update Staff Member'
           }}
         />
       </Stack.Navigator>
