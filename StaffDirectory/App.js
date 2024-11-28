@@ -55,8 +55,8 @@ export default function App() {
             title: 'Add Staff Member'
           }}
         />
-                <Stack.Screen
-          name="AddStaff" 
+        <Stack.Screen
+          name="UpdateStaff" 
           component={UpdateStaffScreen}
           options={{
             title: 'Update Staff Member'
@@ -66,10 +66,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-});
