@@ -7,7 +7,7 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
   const [isLoading, setIsLoading] = useState(true);
 
   // Get staffId passed from StaffList screen
-  const { staffId } = route.params;
+  const { staffId, refresh } = route.params;
 
   console.log('staffId received:', staffId);
 
@@ -34,7 +34,7 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
 
   useEffect(() => {
     fetchStaffDetails();
-  },[staffId]);
+  },[staffId, refresh]);
 
   const fetchStaffDetails = async () => {
     try {
