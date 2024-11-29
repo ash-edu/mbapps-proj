@@ -25,6 +25,9 @@ export default function App() {
           headerTitleStyle: {
             fontFamily: 'Trebuchet MS',
           },
+          // added orientation settings
+          animation: 'slide_from_right',
+          orientation: 'default',
         }}>
         <Stack.Screen 
           name="StaffList" 
