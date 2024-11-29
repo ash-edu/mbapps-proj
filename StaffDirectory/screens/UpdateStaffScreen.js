@@ -6,7 +6,8 @@ import {
     TextInput, 
     TouchableOpacity, 
     ScrollView,
-    Alert 
+    Alert,
+    Platform
   } from 'react-native';
   import { getApiUrl } from '../config/api';
 
@@ -57,6 +58,9 @@ export default function UpdateStaffScreen({ route, navigation }) {
       });
 
       if (response.ok) {
+        if (Platform.OS === 'web') {
+          window.alert('Staff member updated successfully');
+        }
         Alert.alert(
           'Success',
           'Staff member updated successfully',
@@ -66,20 +70,32 @@ export default function UpdateStaffScreen({ route, navigation }) {
               onPress: () => {
                 navigation.navigate('StaffDetail', {
                   staffId,
-                  name: formData.name
+                  name: formData.name,
+                  refresh: true // navigate back to detail screen with refresh flag
                 });
               }
             }
           ]
         );
-      } else {
-        Alert.alert('Error', 'Failed to update staff member');
-      }
-    } catch (error) {
-      console.error('Error updating staff:', error);
-      Alert.alert('Error', 'Failed to update staff member');
-    }
-  };
+    } else {
+        const errorData = await response.json();
+        const errorMessage = errorData.message || 'Failed to update staff member';
+        if (Platform.OS === 'web') {
+          window.alert(`Error: ${errorMessage}`);
+        } else {
+          Alert.alert('Error', errorMessage);
+        }
+        }
+        } catch (error) {
+            console.error('Error updating staff:', error);
+            const errorMessage = 'Failed to update staff member';
+            if (Platform.OS === 'web') {
+              window.alert(`Error: ${errorMessage}`);
+            } else {
+              Alert.alert('Error', errorMessage);
+            }
+          }
+        };      
 
   return (
     <ScrollView style={styles.container}>
