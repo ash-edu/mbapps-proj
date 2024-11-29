@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native'; // add import
 import { getApiUrl } from '../config/api';
 
 export default function StaffListScreen({navigation}) {
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {       
-    fetchStaffData();
-  }, []);
+  useFocusEffect( // replaced 
+    React.useCallback(() => {
+      fetchStaffData();
+    }, [])
+  );
 
   const fetchStaffData = async () => {
     try {
