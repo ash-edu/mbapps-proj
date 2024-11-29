@@ -1,0 +1,12 @@
+{
+    "name": "Smith Jonny",
+    "phone": "02 9988 2211",
+    "department": 1,
+    "address": {
+        "street": "1 Code Lane",
+        "city": "Javaville",
+        "state": "NSW",
+        "postcode": "0100",
+        "country": "Australia"
+    }
+}
