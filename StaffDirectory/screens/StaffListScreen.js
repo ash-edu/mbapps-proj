@@ -1,36 +1,30 @@
-// useState - managing state, useEffect - side effects eg data fetching
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { getApiUrl } from '../config/api';
 
 export default function StaffListScreen({navigation}) {
-  // State setup
-  const [staffList, setStaffList] = useState([]);     // stores staff data array
-  const [isLoading, setIsLoading] = useState(true);   // tracks loading state as bool
+  const [staffList, setStaffList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 1. Effect Hook Setup
   useEffect(() => {       
-    fetchStaffData();     // makes API call to backend
-  }, []); // Dependency array "only run once when component mounts"
+    fetchStaffData();
+  }, []);
 
-  // 2. Fetch func
   const fetchStaffData = async () => {
     try {
-      // 3. API call
-      const response = await fetch('http://localhost:3000/api/staff');
-
-      // 4. Parse response
+      const response = await fetch(`${getApiUrl()}/api/staff`);
       const data = await response.json(); // extracts JSON data from the response, convers to JS object
       setStaffList(data); // updates component's state, triggers a re-render with new data
     } catch (error) {
       console.error('Error fetching staff data:', error);
-    } finally { // runs whether fetch succeeds or fails 
+    } finally {
       setIsLoading(false);
     }
   };
 
 // Renders each staff member
   const renderStaffItem = ({ item }) => (
-  <TouchableOpacity // makes whole item tappable
+  <TouchableOpacity
     style={styles.staffItem}
     onPress={() => navigation.navigate('StaffDetail', { // Navigate to StaffDetail screen with staff ID and name when tapped
       staffId: item.id,
@@ -45,7 +39,7 @@ export default function StaffListScreen({navigation}) {
 </TouchableOpacity>
 );
 
-  if (isLoading) { // Shows loading spinner while data is being fetched 
+  if (isLoading) { 
     return (
     <View style={styles.centered}>
       <ActivityIndicator size="large" color="#941a1d"/>
