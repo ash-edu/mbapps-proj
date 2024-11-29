@@ -6,6 +6,7 @@ import {
   ActivityIndicator, 
   FlatList, 
   TouchableOpacity,
+  TextInput,
   Dimensions
 } from 'react-native';
 import { getApiUrl } from '../config/api';
@@ -15,9 +16,10 @@ import useOrientation from '../hooks/useOrientation';
 export default function StaffListScreen({navigation}) {
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const orientation = useOrientation();
 
-  useFocusEffect( // replaced 
+  useFocusEffect(
     React.useCallback(() => {
       fetchStaffData();
     }, [])
@@ -26,8 +28,8 @@ export default function StaffListScreen({navigation}) {
   const fetchStaffData = async () => {
     try {
       const response = await fetch(`${getApiUrl()}/api/staff`);
-      const data = await response.json(); // extracts JSON data from the response, convers to JS object
-      setStaffList(data); // updates component's state, triggers a re-render with new data
+      const data = await response.json();
+      setStaffList(data);
     } catch (error) {
       console.error('Error fetching staff data:', error);
     } finally {
@@ -35,58 +37,67 @@ export default function StaffListScreen({navigation}) {
     }
   };
 
-// Renders each staff member
+  const filteredStaff = staffList.filter(staff => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      staff.name.toLowerCase().includes(searchLower) ||
+      staff.departmentName.toLowerCase().includes(searchLower)
+    );
+  });
+
   const renderStaffItem = ({ item }) => (
     <TouchableOpacity
-    style={[
-      styles.staffItem,
-      orientation === 'LANDSCAPE' && styles.staffItemLandscape
-    ]}
-    onPress={() => navigation.navigate('StaffDetail', {
-      staffId: item.id,
-      name: item.name
-    })}
-  >
-    <View style={orientation === 'LANDSCAPE' ? styles.staffInfoLandscape : styles.staffInfo}>
-      <Text style={styles.staffName}>{item.name}</Text>
-      <Text style={styles.staffDepartment}>{item.departmentName}</Text>
-      <Text style={styles.staffPhone}>{item.phone}</Text>
-    </View>
-    {orientation === 'LANDSCAPE' && (
-      <View style={styles.staffAddressLandscape}>
-        <Text style={styles.addressText}>{item.address.city}, {item.address.state}</Text>
+      style={[
+        styles.staffItem,
+        orientation === 'LANDSCAPE' && styles.staffItemLandscape
+      ]}
+      onPress={() => navigation.navigate('StaffDetail', {
+        staffId: item.id,
+        name: item.name
+      })}
+    >
+      <View style={orientation === 'LANDSCAPE' ? styles.staffInfoLandscape : styles.staffInfo}>
+        <Text style={styles.staffName}>{item.name}</Text>
+        <Text style={styles.staffDepartment}>{item.departmentName}</Text>
+        <Text style={styles.staffPhone}>{item.phone}</Text>
       </View>
-    )}
-  </TouchableOpacity>
-);
+      {orientation === 'LANDSCAPE' && (
+        <View style={styles.staffAddressLandscape}>
+          <Text style={styles.addressText}>{item.address.city}, {item.address.state}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
 
   if (isLoading) { 
     return (
-    <View style={styles.centered}>
-      <ActivityIndicator size="large" color="#941a1d"/>
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#941a1d"/>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search by name or department..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholderTextColor="#595959"
+        />
+      </View>
+      <FlatList
+        data={filteredStaff}
+        renderItem={renderStaffItem}
+        keyExtractor={item => item.id.toString()}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        key={orientation}
+        numColumns={orientation === 'LANDSCAPE' ? 2 : 1}
+      />
     </View>
   );
-}
-
-/*
-FlatList component takes:
-data:  staffList array
-renderItem: renderStaffItem function
-keyExtractor: generates unique key for each item
-ItemSeparatorComponent: renders line between items
-*/
-return (
-  <View style={styles.container}>
-    <FlatList
-      data={staffList}
-      renderItem={renderStaffItem}
-      keyExtractor={item => item.id.toString()}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
-      key={orientation} // Force re-render when orientation changes
-      numColumns={orientation === 'LANDSCAPE' ? 2 : 1}
-    />
-  </View>
-);
 }
 
 const styles = StyleSheet.create({
@@ -99,6 +110,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff',
+  },
+  searchContainer: {
+    padding: 8,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D9D9D9',
+  },
+  searchInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#ffffff',
+    color: '#262626',
+    fontFamily: 'Trebuchet MS',
   },
   staffItem: {
     padding: 16,

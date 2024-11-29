@@ -142,6 +142,8 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   sectionLandscape: {
     flex: 1,
