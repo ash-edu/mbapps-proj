@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
     View, 
     Text, 
@@ -8,8 +8,8 @@ import {
     ScrollView,
     Alert,
     Platform
-  } from 'react-native';
-  import { getApiUrl } from '../config/api';
+} from 'react-native';
+import { getApiUrl } from '../config/api';
 
 export default function UpdateStaffScreen({ route, navigation }) {
   const { staffMember, staffId } = route.params;
@@ -60,24 +60,35 @@ export default function UpdateStaffScreen({ route, navigation }) {
       if (response.ok) {
         if (Platform.OS === 'web') {
           window.alert('Staff member updated successfully');
-        }
-        Alert.alert(
-          'Success',
-          'Staff member updated successfully',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.navigate('StaffDetail', {
-                  staffId,
-                  name: formData.name,
-                  refresh: true // navigate back to detail screen with refresh flag
-                });
+        } else {
+          Alert.alert(
+            'Success',
+            'Staff member updated successfully',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  // Reset navigation stack
+                  navigation.reset({
+                    index: 1,
+                    routes: [
+                      { name: 'StaffList' },
+                      { 
+                        name: 'StaffDetail',
+                        params: {
+                          staffId,
+                          name: formData.name,
+                          refresh: true
+                        }
+                      }
+                    ],
+                  });
+                }
               }
-            }
-          ]
-        );
-    } else {
+            ]
+          );
+        }
+      } else {
         const errorData = await response.json();
         const errorMessage = errorData.message || 'Failed to update staff member';
         if (Platform.OS === 'web') {
@@ -85,17 +96,17 @@ export default function UpdateStaffScreen({ route, navigation }) {
         } else {
           Alert.alert('Error', errorMessage);
         }
-        }
-        } catch (error) {
-            console.error('Error updating staff:', error);
-            const errorMessage = 'Failed to update staff member';
-            if (Platform.OS === 'web') {
-              window.alert(`Error: ${errorMessage}`);
-            } else {
-              Alert.alert('Error', errorMessage);
-            }
-          }
-        };      
+      }
+    } catch (error) {
+      console.error('Error updating staff:', error);
+      const errorMessage = 'Failed to update staff member';
+      if (Platform.OS === 'web') {
+        window.alert(`Error: ${errorMessage}`);
+      } else {
+        Alert.alert('Error', errorMessage);
+      }
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -188,7 +199,6 @@ export default function UpdateStaffScreen({ route, navigation }) {
   );
 }
 
-
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -237,4 +247,4 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontFamily: 'Trebuchet MS',
     },
-  });
+});
