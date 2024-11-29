@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native'; // add import
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ActivityIndicator, 
+  FlatList, 
+  TouchableOpacity,
+  Dimensions
+} from 'react-native';
 import { getApiUrl } from '../config/api';
+import { useFocusEffect } from '@react-navigation/native';
+import useOrientation from '../hooks/useOrientation';
 
 export default function StaffListScreen({navigation}) {
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const orientation = useOrientation();
 
   useFocusEffect( // replaced 
     React.useCallback(() => {
@@ -27,19 +37,27 @@ export default function StaffListScreen({navigation}) {
 
 // Renders each staff member
   const renderStaffItem = ({ item }) => (
-  <TouchableOpacity
-    style={styles.staffItem}
-    onPress={() => navigation.navigate('StaffDetail', { // Navigate to StaffDetail screen with staff ID and name when tapped
+    <TouchableOpacity
+    style={[
+      styles.staffItem,
+      orientation === 'LANDSCAPE' && styles.staffItemLandscape
+    ]}
+    onPress={() => navigation.navigate('StaffDetail', {
       staffId: item.id,
       name: item.name
     })}
   >
-  <View>
-  <Text style={styles.staffName}>{item.name}</Text>
-  <Text style={styles.staffDepartment}>{item.departmentName}</Text>
-  <Text style={styles.staffPhone}>{item.phone}</Text>
-  </View>
-</TouchableOpacity>
+    <View style={orientation === 'LANDSCAPE' ? styles.staffInfoLandscape : styles.staffInfo}>
+      <Text style={styles.staffName}>{item.name}</Text>
+      <Text style={styles.staffDepartment}>{item.departmentName}</Text>
+      <Text style={styles.staffPhone}>{item.phone}</Text>
+    </View>
+    {orientation === 'LANDSCAPE' && (
+      <View style={styles.staffAddressLandscape}>
+        <Text style={styles.addressText}>{item.address.city}, {item.address.state}</Text>
+      </View>
+    )}
+  </TouchableOpacity>
 );
 
   if (isLoading) { 
@@ -49,6 +67,7 @@ export default function StaffListScreen({navigation}) {
     </View>
   );
 }
+
 /*
 FlatList component takes:
 data:  staffList array
@@ -59,13 +78,15 @@ ItemSeparatorComponent: renders line between items
 return (
   <View style={styles.container}>
     <FlatList
-    data={staffList}
-    renderItem={renderStaffItem}
-    keyExtractor={item => item.id.toString()}
-    ItemSeparatorComponent={() => <View style={styles.separator} />}
+      data={staffList}
+      renderItem={renderStaffItem}
+      keyExtractor={item => item.id.toString()}
+      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      key={orientation} // Force re-render when orientation changes
+      numColumns={orientation === 'LANDSCAPE' ? 2 : 1}
     />
   </View>
-  );
+);
 }
 
 const styles = StyleSheet.create({
@@ -82,27 +103,57 @@ const styles = StyleSheet.create({
   staffItem: {
     padding: 16,
     backgroundColor: '#ffffff',
+    flex: 1,
+  },
+  staffItemLandscape: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 8,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  staffInfo: {
+    flex: 1,
+  },
+  staffInfoLandscape: {
+    flex: 2,
+  },
+  staffAddressLandscape: {
+    flex: 1,
+    borderLeftWidth: 1,
+    borderLeftColor: '#D9D9D9',
+    paddingLeft: 16,
   },
   staffName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#941a1d', // ROI Red
+    color: '#941a1d',
     marginBottom: 4,
     fontFamily: 'Trebuchet MS',
   },
   staffDepartment: {
     fontSize: 14,
-    color: '#262626', // ROI Charcoal
+    color: '#262626',
     marginBottom: 2,
     fontFamily: 'Trebuchet MS',
   },
   staffPhone: {
     fontSize: 14,
-    color: '#595959', // ROI Grey
+    color: '#595959',
+    fontFamily: 'Trebuchet MS',
+  },
+  addressText: {
+    fontSize: 14,
+    color: '#595959',
     fontFamily: 'Trebuchet MS',
   },
   separator: {
     height: 1,
-    backgroundColor: '#D9D9D9', // ROI Light Grey
+    backgroundColor: '#D9D9D9',
   }
 });

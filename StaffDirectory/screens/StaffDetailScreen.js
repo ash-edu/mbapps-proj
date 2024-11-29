@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import { getApiUrl } from '../config/api';
+import useOrientation from '../hooks/useOrientation';
 
 export default function StaffDetailScreen({ route, navigation }) { // add nav prop
   const [staffMember, setStaffMember] = useState(null);
@@ -8,6 +9,7 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
 
   // Get staffId passed from StaffList screen
   const { staffId, refresh } = route.params;
+  const orientation = useOrientation();
 
   console.log('staffId received:', staffId);
 
@@ -25,8 +27,7 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
             fontSize: 16, 
             fontFamily: 'Trebuchet MS', 
             padding: 10
-           }}> Update details
-          </Text>
+           }}>Update details</Text>
         </TouchableOpacity>
       ),
     });
@@ -67,49 +68,55 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
   return (
     <ScrollView style={styles.container}>
       {/* Personal Information Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
-        <View style={styles.infoContainer}>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Name</Text>
-            <Text style={styles.value}>{staffMember.name}</Text>
+      <View style={[
+          styles.section,
+          orientation === 'LANDSCAPE' && styles.sectionLandscape
+        ]}>
+          <Text style={styles.sectionTitle}>Personal Information</Text>
+          <View style={styles.infoContainer}>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Name</Text>
+              <Text style={styles.value}>{staffMember.name}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Phone</Text>
+              <Text style={styles.value}>{staffMember.phone}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Department</Text>
+              <Text style={styles.value}>{staffMember.departmentName}</Text>
+            </View>
           </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Phone</Text>
-            <Text style={styles.value}>{staffMember.phone}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Department</Text>
-            <Text style={styles.value}>{staffMember.departmentName}</Text>
-          </View>
-        </View>
       </View>
 
       {/* Address Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Address</Text>
-        <View style={styles.infoContainer}>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Street</Text>
-            <Text style={styles.value}>{staffMember.address.street}</Text>
+      <View style={[
+          styles.section,
+          orientation === 'LANDSCAPE' && styles.sectionLandscape
+        ]}>
+          <Text style={styles.sectionTitle}>Address</Text>
+          <View style={styles.infoContainer}>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Street</Text>
+              <Text style={styles.value}>{staffMember.address.street}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>City</Text>
+              <Text style={styles.value}>{staffMember.address.city}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>State</Text>
+              <Text style={styles.value}>{staffMember.address.state}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Postcode</Text>
+              <Text style={styles.value}>{staffMember.address.postcode}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Country</Text>
+              <Text style={styles.value}>{staffMember.address.country}</Text>
+            </View>
           </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>City</Text>
-            <Text style={styles.value}>{staffMember.address.city}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>State</Text>
-            <Text style={styles.value}>{staffMember.address.state}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Postcode</Text>
-            <Text style={styles.value}>{staffMember.address.postcode}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Country</Text>
-            <Text style={styles.value}>{staffMember.address.country}</Text>
-          </View>
-        </View>
       </View>
     </ScrollView>
   );
@@ -120,6 +127,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  content: {
+    padding: 16,
+  },
+  contentLandscape: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   centered: {
     flex: 1,
     justifyContent: 'center',
@@ -127,9 +141,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   section: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D9D9D9',
+    marginBottom: 24,
+  },
+  sectionLandscape: {
+    flex: 1,
+    marginHorizontal: 8,
   },
   sectionTitle: {
     fontSize: 18,
@@ -140,10 +156,13 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     backgroundColor: '#ffffff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
   },
   infoRow: {
     flexDirection: 'row',
-    paddingVertical: 8,
+    padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#D9D9D9',
   },
@@ -163,5 +182,11 @@ const styles = StyleSheet.create({
     color: '#941a1d',
     fontSize: 16,
     fontFamily: 'Trebuchet MS',
+  },
+  headerButton: {
+    color: '#ffffff', 
+    fontSize: 16, 
+    fontFamily: 'Trebuchet MS', 
+    padding: 10
   },
 });
