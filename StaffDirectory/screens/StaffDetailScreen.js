@@ -1,27 +1,44 @@
-// useState - managing state, useEffect - side effects eg data fetching
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
+import { getApiUrl } from '../config/api';
 
-export default function StaffDetailScreen( {route} ) {
-  // State setup
+export default function StaffDetailScreen({ route, navigation }) { // add nav prop
   const [staffMember, setStaffMember] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Get staffId passed from StaffList screen
   const { staffId } = route.params;
 
-  // 1. Effect Hook Setup
+  console.log('staffId received:', staffId);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('UpdateStaff', {
+            staffMember,
+            staffId
+          })}
+        >
+          <Text style={{
+            color: '#ffffff', 
+            fontSize: 16, 
+            fontFamily: 'Trebuchet MS', 
+            padding: 10
+           }}> Update details
+          </Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, staffMember]);
+
   useEffect(() => {
     fetchStaffDetails();
   },[staffId]);
 
-  // 2. Fetch func
   const fetchStaffDetails = async () => {
     try {
-      // 3. API call
-      const response = await fetch(`http://localhost:3000/api/staff/${staffId}`);
-
-      // 4. Parse resp
+      const response = await fetch(`${getApiUrl()}/api/staff/${staffId}`); // change path 
       const data = await response.json();
       setStaffMember(data);
     } catch (error) {
