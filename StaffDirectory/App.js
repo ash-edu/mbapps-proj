@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Image, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -12,6 +12,21 @@ import UpdateStaffScreen from './screens/UpdateStaffScreen';
 
 const Stack = createNativeStackNavigator();
 
+const LogoTitle = () => {
+  return (
+    <View style={styles.headerContainer}>
+      <Image
+        style={styles.logo}
+        source={require('./assets/logo.png')}
+        resizeMode="contain"
+      />
+      <Text style={styles.headerText}>
+        Staff Directory
+      </Text>
+    </View>
+  );
+};
+
 export default function App() {
   return (
     <NavigationContainer>
@@ -19,16 +34,23 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#941a1d', 
+            backgroundColor: '#a30414', 
           },
           headerTintColor: '#ffffff',
           headerTitleStyle: {
             fontFamily: 'Trebuchet MS',
           },
-          // added orientation settings
+          headerTitle: (props) => <LogoTitle {...props} />,
+          headerLeftContainerStyle: {
+            paddingLeft: 8
+          },
+          headerTitleContainerStyle: {
+            paddingLeft: 0,
+            marginLeft: -16  // pull content left
+          },
           animation: 'slide_from_right',
           orientation: 'default',
-        }}>
+        }}>        
         <Stack.Screen 
           name="StaffList" 
           component={StaffListScreen}
@@ -69,3 +91,21 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Center items vertically
+    marginLeft: -25, // reduce left padding
+  },
+  logo: {
+    width: 120,
+    height: 36,
+  },
+  headerText: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontFamily: 'Trebuchet MS',
+    marginLeft: -12, // space between logo and text
+  }
+});
