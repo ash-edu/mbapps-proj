@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     View, 
     Text, 
@@ -9,10 +9,14 @@ import {
     Alert,
     Platform
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { getApiUrl } from '../config/api';
+import { getDepartments } from '../config/api';
+
 
 export default function UpdateStaffScreen({ route, navigation }) {
   const { staffMember, staffId } = route.params;
+  const [departments, setDepartments] = useState([]);
   const [formData, setFormData] = useState({
     name: staffMember.name,
     phone: staffMember.phone,
@@ -43,6 +47,18 @@ export default function UpdateStaffScreen({ route, navigation }) {
       }));
     }
   };
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const deptData = await getDepartments();
+        setDepartments(deptData);
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    };
+    fetchDepartments();
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -135,13 +151,21 @@ export default function UpdateStaffScreen({ route, navigation }) {
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Department</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.department}
-            onChangeText={(value) => updateFormData('department', value)}
-            placeholder="Enter department number"
-            keyboardType="numeric"
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+            selectedValue={formData.department}
+            onValueChange={(value) => updateFormData('department', parseInt(value))}
+            style={styles.picker}
+            >
+              {departments.map((dept) => (
+                <Picker.Item 
+                key={dept.id} 
+                label={dept.name} 
+                value={dept.id}
+                />
+                ))}
+            </Picker>
+          </View>
         </View>
       </View>
 
@@ -245,6 +269,18 @@ const styles = StyleSheet.create({
       color: '#ffffff',
       fontSize: 16,
       fontWeight: 'bold',
+      fontFamily: 'Trebuchet MS',
+    },
+    pickerContainer: {
+      borderWidth: 1,
+      borderColor: '#D9D9D9',
+      borderRadius: 4,
+      backgroundColor: '#ffffff',
+    },
+    picker: {
+      height: 50,
+      width: '100%',
+      color: '#595959',
       fontFamily: 'Trebuchet MS',
     },
 });

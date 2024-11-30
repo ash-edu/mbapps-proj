@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,7 +8,9 @@ import {
   ScrollView,
   Alert 
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { getApiUrl } from '../config/api';
+import { getDepartments } from '../config/api';
 
 
 export default function AddStaffScreen({ navigation }) {
@@ -25,6 +27,20 @@ export default function AddStaffScreen({ navigation }) {
       country: 'Australia'
     }
   });
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const deptData = await getDepartments();
+        setDepartments(deptData);
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    };
+    fetchDepartments();
+  }, []);
+
 
   const handleSubmit = async () => {
     try {
@@ -87,6 +103,7 @@ const updateFormData = (field, value) => {
             placeholder="Enter name"
           />
         </View>
+      
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Phone</Text>
@@ -101,17 +118,26 @@ const updateFormData = (field, value) => {
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Department</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.department}
-            onChangeText={(value) => updateFormData('department', value)}
-            placeholder="Enter department number"
-            keyboardType="numeric"
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+            selectedValue={formData.department}
+            onValueChange={(value) => updateFormData('department', parseInt(value))}
+            style={styles.picker}
+            >
+              <Picker.Item label="Select Department" value="" />
+              {departments.map((dept) => (
+                <Picker.Item 
+                key={dept.id} 
+                label={dept.name} 
+                value={dept.id}
+                />
+              ))}
+            </Picker>
+          </View>
         </View>
-      </View>
-
-      <View style={styles.section}>
+        </View>
+        
+        <View style={styles.section}>
         <Text style={styles.sectionTitle}>Address</Text>
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Street</Text>
@@ -133,7 +159,7 @@ const updateFormData = (field, value) => {
           />
         </View>
 
-        <View style={styles.inputGroup}>
+      <View style={styles.inputGroup}>
           <Text style={styles.label}>State</Text>
           <TextInput
             style={styles.input}
@@ -141,10 +167,10 @@ const updateFormData = (field, value) => {
             onChangeText={(value) => updateFormData('address.state', value)}
             placeholder="Enter state"
           />
-        </View>
+      </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Postcode</Text>
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Postcode</Text>
           <TextInput
             style={styles.input}
             value={formData.address.postcode}
@@ -211,6 +237,18 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Trebuchet MS',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    borderRadius: 4,
+    backgroundColor: '#ffffff',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: '#595959',
     fontFamily: 'Trebuchet MS',
   },
 });
