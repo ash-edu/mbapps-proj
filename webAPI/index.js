@@ -153,6 +153,11 @@ app.get('/api/staff/:staffId',(req,res) => {
     }
 });
 
+// GET all departments
+app.get('/api/departments', (req, res) => {
+    res.json(departments);
+});
+
 // POST for adding new staff member
 app.post('/api/staff',(req,res) => {
     // Get new staff data from body
