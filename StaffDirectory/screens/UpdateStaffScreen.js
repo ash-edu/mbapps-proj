@@ -10,8 +10,8 @@ import {
     Platform
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { getApiUrl } from '../config/api';
 import { getDepartments } from '../config/api';
+import { staffStorage } from '../services/staffStorage';
 
 
 export default function UpdateStaffScreen({ route, navigation }) {
@@ -62,60 +62,45 @@ export default function UpdateStaffScreen({ route, navigation }) {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/api/staff/${staffId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          department: parseInt(formData.department)
-        }),
+      const updatedStaff = await staffStorage.updateStaffMember(staffId, {
+        ...formData,
+        department: parseInt(formData.department)
       });
-
-      if (response.ok) {
-        if (Platform.OS === 'web') {
-          window.alert('Staff member updated successfully');
-        } else {
-          Alert.alert(
-            'Success',
-            'Staff member updated successfully',
-            [
-              {
-                text: 'OK',
-                onPress: () => {
-                  // Reset navigation stack
-                  navigation.reset({
-                    index: 1,
-                    routes: [
-                      { name: 'StaffList' },
-                      { 
-                        name: 'StaffDetail',
-                        params: {
-                          staffId,
-                          name: formData.name,
-                          refresh: true
-                        }
-                      }
-                    ],
-                  });
-                }
-              }
-            ]
-          );
-        }
+  
+      // If we get here, the update was successful (otherwise it would have thrown an error)
+      if (Platform.OS === 'web') {
+        window.alert('Staff member updated successfully');
       } else {
-        const errorData = await response.json();
-        const errorMessage = errorData.message || 'Failed to update staff member';
-        if (Platform.OS === 'web') {
-          window.alert(`Error: ${errorMessage}`);
-        } else {
-          Alert.alert('Error', errorMessage);
-        }
+        Alert.alert(
+          'Success',
+          'Staff member updated successfully',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                // Reset navigation stack
+                navigation.reset({
+                  index: 1,
+                  routes: [
+                    { name: 'StaffList' },
+                    { 
+                      name: 'StaffDetail',
+                      params: {
+                        staffId,
+                        name: formData.name,
+                        refresh: true
+                      }
+                    }
+                  ],
+                });
+              }
+            }
+          ]
+        );
       }
     } catch (error) {
       console.error('Error updating staff:', error);
-      const errorMessage = 'Failed to update staff member';
+      const errorMessage = error.message || 'Failed to update staff member';
       if (Platform.OS === 'web') {
         window.alert(`Error: ${errorMessage}`);
       } else {

@@ -9,9 +9,8 @@ import {
   Alert 
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { getApiUrl } from '../config/api';
 import { getDepartments } from '../config/api';
-
+import { staffStorage } from '../services/staffStorage';
 
 export default function AddStaffScreen({ navigation }) {
   // State setup
@@ -41,31 +40,19 @@ export default function AddStaffScreen({ navigation }) {
     fetchDepartments();
   }, []);
 
-
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/api/staff`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // **
-        },
-        body: JSON.stringify(formData), //*
-      });
-
-      if(response.ok) {
-        Alert.alert(
-          'Success',
-          'Staff member added successfully',
-          [
-            {
-              text: 'OK',
-              onPress: () => navigation.navigate('StaffList')
-            }
-          ]
-        );
-      } else {
-        Alert.alert('Error', 'Failed to add staff member');
-      }
+      await staffStorage.addStaffMember(formData);
+      Alert.alert(
+        'Success',
+        'Staff member added successfully',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('StaffList')
+          }
+        ]
+      );
     } catch (error) {
       console.error('Error adding staff:', error);
       Alert.alert('Error', 'Failed to add staff member');
@@ -79,7 +66,7 @@ const updateFormData = (field, value) => {
       ...prev,
       [parent]: {
         ...prev[parent],
-        child: value
+        [child]: value
       }
     }));
   } else {

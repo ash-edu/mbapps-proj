@@ -7,10 +7,9 @@ import {
   FlatList, 
   TouchableOpacity,
   TextInput,
-  Dimensions
 } from 'react-native';
-import { getApiUrl } from '../config/api';
 import { useFocusEffect } from '@react-navigation/native';
+import { staffStorage } from '../services/staffStorage';
 import useOrientation from '../hooks/useOrientation';
 
 export default function StaffListScreen({navigation}) {
@@ -27,8 +26,7 @@ export default function StaffListScreen({navigation}) {
 
   const fetchStaffData = async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/api/staff`);
-      const data = await response.json();
+      const data = await staffStorage.getStaffList(); // updated to use staff storage service
       setStaffList(data);
     } catch (error) {
       console.error('Error fetching staff data:', error);
@@ -36,7 +34,7 @@ export default function StaffListScreen({navigation}) {
       setIsLoading(false);
     }
   };
-
+  
   const filteredStaff = staffList.filter(staff => {
     const searchLower = searchQuery.toLowerCase();
     return (
