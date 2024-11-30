@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import { getApiUrl } from '../config/api';
 import useOrientation from '../hooks/useOrientation';
@@ -12,26 +12,6 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
   const orientation = useOrientation();
 
   console.log('staffId received:', staffId);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => navigation.navigate('UpdateStaff', {
-            staffMember,
-            staffId
-          })}
-        >
-          <Text style={{
-            color: '#ffffff', 
-            fontSize: 16, 
-            fontFamily: 'Trebuchet MS', 
-            padding: 10
-           }}>Update details</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation, staffMember]);
 
   useEffect(() => {
     fetchStaffDetails();
@@ -118,6 +98,20 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
             </View>
           </View>
       </View>
+      <View style={[
+        styles.section,
+        orientation === 'LANDSCAPE' && styles.sectionLandscape
+        ]}>
+          <TouchableOpacity
+          style={styles.updateButton}
+          onPress={() => navigation.navigate('UpdateStaff', {
+            staffMember,
+            staffId
+          })}
+          >
+            <Text style={styles.updateButtonText}>Update Details</Text>
+          </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -190,5 +184,18 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontFamily: 'Trebuchet MS', 
     padding: 10
+  },
+  updateButton: {
+    backgroundColor: '#941a1d',
+    padding: 16,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  updateButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Trebuchet MS',
+    fontWeight: 'bold',
   },
 });
