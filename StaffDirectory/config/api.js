@@ -7,3 +7,16 @@ export const getApiUrl = () => {
   }
   return API_URL;
 };
+
+export const getDepartments = async () => {
+  try {
+      const response = await fetch(`${getApiUrl()}/api/departments`);
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return await response.json();
+  } catch (error) {
+      console.error('Error fetching departments:', error);
+      return [];
+  }
+};
