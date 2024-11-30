@@ -12,7 +12,7 @@ export const getDepartments = async () => {
   try {
       const response = await fetch(`${getApiUrl()}/api/departments`);
       if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Network response error');
       }
       return await response.json();
   } catch (error) {
