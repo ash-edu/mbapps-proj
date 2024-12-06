@@ -3,7 +3,7 @@ module.exports = function(api) {
     return {
       presets: ['babel-preset-expo'],
       plugins: [
-        ["module:react-native-dotenv", {
+        ["module:react-native-dotenv", { // load environment variables using import statements
           "moduleName": "@env",
           "path": ".env",
           "blacklist": null,
@@ -14,3 +14,12 @@ module.exports = function(api) {
       ]
     };
   };
+
+  /* refs:
+  https://docs.expo.dev/versions/latest/config/babel/
+  https://babeljs.io/docs/configuration
+  https://www.npmjs.com/package/react-native-dotenv
+  https://www.npmjs.com/package/react-native-dotenv/v/3.3.1
+  babel: JS compiler, makes react apps backwards compatible w old browsers
+  
+  */
