@@ -1,17 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import { getApiUrl } from '../config/api';
+import { useFontSize } from '../context/FontSizeContext';
 import useOrientation from '../hooks/useOrientation';
 
 export default function StaffDetailScreen({ route, navigation }) { // add nav prop
+  // hooks
   const [staffMember, setStaffMember] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Get staffId passed from StaffList screen
-  const { staffId, refresh } = route.params;
+  const { staffId, refresh } = route.params;  // get staffId passed from StaffList screen
   const orientation = useOrientation();
+  const { fontSizeMultiplier } = useFontSize();
 
-  console.log('staffId received:', staffId);
+  // dynamic styles for font
+  const dynamicStyles = {
+    sectionTitle: {
+      fontSize: 18* fontSizeMultiplier,
+      fontWeight: 'bold',
+      color: '#941a1d',
+      marginBottom: 16,
+      fontFamily: 'Trebuchet MS',
+    },
+    label: {
+      flex: 1,
+      fontSize: 14 * fontSizeMultiplier,
+      color: '#262626',
+      fontFamily: 'Trebuchet MS',
+    },
+    value: {
+      flex: 2,
+      fontSize: 14 * fontSizeMultiplier,
+      color: '#595959',
+      fontFamily: 'Trebuchet MS',
+    },
+    errorText: {
+      color: '#941a1d',
+      fontSize: 16 * fontSizeMultiplier,
+      fontFamily: 'Trebuchet MS',
+    },
+    // headerButton: {   clean up
+    //   color: '#ffffff', 
+    //   fontSize: 16 * fontSizeMultiplier, 
+    //   fontFamily: 'Trebuchet MS', 
+    //   padding: 10
+    // },
+    updateButtonText: {
+      color: '#ffffff',
+      fontSize: 16 * fontSizeMultiplier,
+      fontFamily: 'Trebuchet MS',
+      fontWeight: 'bold',
+    }
+  };
+
+  //console.log('staffId received:', staffId);
 
   useEffect(() => {
     fetchStaffDetails();
@@ -40,7 +81,7 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
   if (!staffMember) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorText}>Could not load staff details</Text>
+        <Text style={dynamicStyles.errorText}>Could not load staff details</Text>
       </View>
     );
   }
@@ -52,19 +93,19 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
           styles.section,
           orientation === 'LANDSCAPE' && styles.sectionLandscape
         ]}>
-          <Text style={styles.sectionTitle}>Personal Information</Text>
+          <Text style={dynamicStyles.sectionTitle}>Personal Information</Text>
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Name</Text>
-              <Text style={styles.value}>{staffMember.name}</Text>
+              <Text style={dynamicStyles.label}>Name</Text>
+              <Text style={dynamicStyles.value}>{staffMember.name}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Phone</Text>
-              <Text style={styles.value}>{staffMember.phone}</Text>
+              <Text style={dynamicStyles.label}>Phone</Text>
+              <Text style={dynamicStyles.value}>{staffMember.phone}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Department</Text>
-              <Text style={styles.value}>{staffMember.departmentName}</Text>
+              <Text style={dynamicStyles.label}>Department</Text>
+              <Text style={dynamicStyles.value}>{staffMember.departmentName}</Text>
             </View>
           </View>
       </View>
@@ -74,27 +115,27 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
           styles.section,
           orientation === 'LANDSCAPE' && styles.sectionLandscape
         ]}>
-          <Text style={styles.sectionTitle}>Address</Text>
+          <Text style={dynamicStyles.sectionTitle}>Address</Text>
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Street</Text>
-              <Text style={styles.value}>{staffMember.address.street}</Text>
+              <Text style={dynamicStyles.label}>Street</Text>
+              <Text style={dynamicStyles.value}>{staffMember.address.street}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>City</Text>
-              <Text style={styles.value}>{staffMember.address.city}</Text>
+              <Text style={dynamicStyles.label}>City</Text>
+              <Text style={dynamicStyles.value}>{staffMember.address.city}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>State</Text>
-              <Text style={styles.value}>{staffMember.address.state}</Text>
+              <Text style={dynamicStyles.label}>State</Text>
+              <Text style={dynamicStyles.value}>{staffMember.address.state}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Postcode</Text>
-              <Text style={styles.value}>{staffMember.address.postcode}</Text>
+              <Text style={dynamicStyles.label}>Postcode</Text>
+              <Text style={dynamicStyles.value}>{staffMember.address.postcode}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Country</Text>
-              <Text style={styles.value}>{staffMember.address.country}</Text>
+              <Text style={dynamicStyles.label}>Country</Text>
+              <Text style={dynamicStyles.value}>{staffMember.address.country}</Text>
             </View>
           </View>
       </View>
@@ -109,7 +150,7 @@ export default function StaffDetailScreen({ route, navigation }) { // add nav pr
             staffId
           })}
           >
-            <Text style={styles.updateButtonText}>Update Details</Text>
+            <Text style={dynamicStyles.updateButtonText}>Update Details</Text>
           </TouchableOpacity>
       </View>
     </ScrollView>
@@ -143,13 +184,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 8,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#941a1d',
-    marginBottom: 16,
-    fontFamily: 'Trebuchet MS',
-  },
   infoContainer: {
     backgroundColor: '#ffffff',
     borderRadius: 8,
@@ -162,40 +196,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#D9D9D9',
   },
-  label: {
-    flex: 1,
-    fontSize: 14,
-    color: '#262626',
-    fontFamily: 'Trebuchet MS',
-  },
-  value: {
-    flex: 2,
-    fontSize: 14,
-    color: '#595959',
-    fontFamily: 'Trebuchet MS',
-  },
-  errorText: {
-    color: '#941a1d',
-    fontSize: 16,
-    fontFamily: 'Trebuchet MS',
-  },
-  headerButton: {
-    color: '#ffffff', 
-    fontSize: 16, 
-    fontFamily: 'Trebuchet MS', 
-    padding: 10
-  },
   updateButton: {
     backgroundColor: '#941a1d',
     padding: 16,
+    margin: 16,  // Consistent 16dp margin all around
     borderRadius: 4,
     alignItems: 'center',
-    marginTop: 8,
-  },
-  updateButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontFamily: 'Trebuchet MS',
-    fontWeight: 'bold',
+    marginTop: 40,    // Increased from 8
+    marginBottom: 32, // Added bottom margin
+    marginHorizontal: 16, // Added horizontal margin
   },
 });

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { getDepartments } from '../config/api';
+import { useFontSize } from '../context/FontSizeContext';
 import { staffStorage } from '../services/staffStorage';
 
 
@@ -30,6 +31,7 @@ export default function UpdateStaffScreen({ route, navigation }) {
     }
   });
 
+
   const updateFormData = (field, value) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
@@ -47,6 +49,46 @@ export default function UpdateStaffScreen({ route, navigation }) {
       }));
     }
   };
+
+  const { fontSizeMultiplier } = useFontSize();
+  
+  // dynamic styles for font
+  const dynamicStyles = {
+    sectionTitle: {
+      fontSize: 18 * fontSizeMultiplier,
+      fontWeight: 'bold',
+      color: '#941a1d',
+      marginBottom: 16,
+      fontFamily: 'Trebuchet MS',
+    },
+    label: {
+      fontSize: 14 * fontSizeMultiplier,
+      color: '#262626',
+      marginBottom: 8,
+      fontFamily: 'Trebuchet MS',
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: '#D9D9D9',
+      borderRadius: 4,
+      padding: 8,
+      fontSize: 14 * fontSizeMultiplier,
+      color: '#595959',
+      fontFamily: 'Trebuchet MS',
+    },
+    label: {
+      fontSize: 14 * fontSizeMultiplier,
+      color: '#262626',
+      marginBottom: 8,
+      fontFamily: 'Trebuchet MS',
+    },
+    submitButtonText: {
+      color: '#ffffff',
+      fontSize: 16 * fontSizeMultiplier,
+      fontWeight: 'bold',
+      fontFamily: 'Trebuchet MS',
+    },
+  }
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -112,11 +154,11 @@ export default function UpdateStaffScreen({ route, navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
+        <Text style={dynamicStyles.sectionTitle}>Personal Information</Text>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Name</Text>
+          <Text style={dynamicStyles.label}>Name</Text>
           <TextInput
-            style={styles.input}
+            style={dynamicStyles.input}
             value={formData.name}
             onChangeText={(value) => updateFormData('name', value)}
             placeholder="Enter name"
@@ -124,9 +166,9 @@ export default function UpdateStaffScreen({ route, navigation }) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Phone</Text>
+          <Text style={dynamicStyles.label}>Phone</Text>
           <TextInput
-            style={styles.input}
+            style={dynamicStyles.input}
             value={formData.phone}
             onChangeText={(value) => updateFormData('phone', value)}
             placeholder="Enter phone number"
@@ -135,7 +177,7 @@ export default function UpdateStaffScreen({ route, navigation }) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Department</Text>
+          <Text style={dynamicStyles.label}>Department</Text>
           <View style={styles.pickerContainer}>
             <Picker
             selectedValue={formData.department}
@@ -155,21 +197,21 @@ export default function UpdateStaffScreen({ route, navigation }) {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Address</Text>
+        <Text style={dynamicStyles.sectionTitle}>Address</Text>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Street</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.address.street}
-            onChangeText={(value) => updateFormData('address.street', value)}
-            placeholder="Enter street address"
-          />
+            <Text style={dynamicStyles.label}>Street</Text>
+            <TextInput
+              style={dynamicStyles.input}
+              value={formData.address.street}
+              onChangeText={(value) => updateFormData('address.street', value)}
+              placeholder="Enter street address"
+            />
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>City</Text>
+          <Text style={dynamicStyles.label}>City</Text>
           <TextInput
-            style={styles.input}
+            style={dynamicStyles.input}
             value={formData.address.city}
             onChangeText={(value) => updateFormData('address.city', value)}
             placeholder="Enter city"
@@ -177,9 +219,9 @@ export default function UpdateStaffScreen({ route, navigation }) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>State</Text>
+          <Text style={dynamicStyles.label}>State</Text>
           <TextInput
-            style={styles.input}
+            style={dynamicStyles.input}
             value={formData.address.state}
             onChangeText={(value) => updateFormData('address.state', value)}
             placeholder="Enter state"
@@ -187,9 +229,9 @@ export default function UpdateStaffScreen({ route, navigation }) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Postcode</Text>
+          <Text style={dynamicStyles.label}>Postcode</Text>
           <TextInput
-            style={styles.input}
+            style={dynamicStyles.input}
             value={formData.address.postcode}
             onChangeText={(value) => updateFormData('address.postcode', value)}
             placeholder="Enter postcode"
@@ -202,7 +244,7 @@ export default function UpdateStaffScreen({ route, navigation }) {
         style={styles.submitButton}
         onPress={handleSubmit}
       >
-        <Text style={styles.submitButtonText}>Update Staff Member</Text>
+        <Text style={dynamicStyles.submitButtonText}>Update Staff Member</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -214,34 +256,15 @@ const styles = StyleSheet.create({
       backgroundColor: '#ffffff',
     },
     section: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
       padding: 16,
       borderBottomWidth: 1,
       borderBottomColor: '#D9D9D9',
     },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#941a1d',
-      marginBottom: 16,
-      fontFamily: 'Trebuchet MS',
-    },
     inputGroup: {
       marginBottom: 16,
-    },
-    label: {
-      fontSize: 14,
-      color: '#262626',
-      marginBottom: 8,
-      fontFamily: 'Trebuchet MS',
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#D9D9D9',
-      borderRadius: 4,
-      padding: 8,
-      fontSize: 14,
-      color: '#595959',
-      fontFamily: 'Trebuchet MS',
     },
     submitButton: {
       backgroundColor: '#941a1d',
@@ -249,12 +272,6 @@ const styles = StyleSheet.create({
       margin: 16,
       borderRadius: 4,
       alignItems: 'center',
-    },
-    submitButtonText: {
-      color: '#ffffff',
-      fontSize: 16,
-      fontWeight: 'bold',
-      fontFamily: 'Trebuchet MS',
     },
     pickerContainer: {
       borderWidth: 1,
@@ -268,4 +285,12 @@ const styles = StyleSheet.create({
       color: '#595959',
       fontFamily: 'Trebuchet MS',
     },
+    updateButton: {
+      backgroundColor: '#941a1d',
+      padding: 16,
+      borderRadius: 4,
+      alignItems: 'center',
+      marginTop: 16,  // Increased from 8 to 16
+      marginBottom: 24  // Added margin bottom
+    }
 });
