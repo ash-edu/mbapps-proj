@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row', // Align items horizontally
     alignItems: 'center', // Center items vertically
-    marginLeft: -25, // reduce left padding
+    marginLeft: -10, // reduce left padding
   },
   logo: {
     width: 120,
