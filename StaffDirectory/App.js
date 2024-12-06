@@ -115,8 +115,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: 'row', // Align items horizontally
-    alignItems: 'center', // Center items vertically
+    flexDirection: 'row', 
+    alignItems: 'center',
     marginLeft: -10, // reduce left padding
   },
   logo: {
