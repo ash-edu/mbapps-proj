@@ -1,9 +1,5 @@
 node_modules/
 
-# Env
-.env
-.env.production
-
 # Expo
 .expo/
 dist/
