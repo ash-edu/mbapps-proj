@@ -3,13 +3,14 @@ import { StyleSheet, Text, TouchableOpacity, Image, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import FontSizeControls from './components/FontSizeControls';
-import { FontSizeProvider, useFontSize } from './context/FontSizeContext';
+import FontSizeControls from './src/components/FontSizeControls';
+import { FontSizeProvider, useFontSize } from './src/context/FontSizeContext';
 
-import StaffListScreen from './screens/StaffListScreen';
-import StaffDetailScreen from './screens/StaffDetailScreen';
-import AddStaffScreen from './screens/AddStaffScreen';
-import UpdateStaffScreen from './screens/UpdateStaffScreen';
+import StaffListScreen from './src/screens/StaffListScreen';
+import StaffDetailScreen from './src/screens/StaffDetailScreen';
+import AddStaffScreen from './src/screens/AddStaffScreen';
+import UpdateStaffScreen from './src/screens/UpdateStaffScreen';
+
 
 const Stack = createNativeStackNavigator();
 
