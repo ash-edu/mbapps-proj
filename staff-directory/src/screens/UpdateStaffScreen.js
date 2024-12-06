@@ -109,7 +109,6 @@ export default function UpdateStaffScreen({ route, navigation }) {
         department: parseInt(formData.department)
       });
   
-      // If we get here, the update was successful (otherwise it would have thrown an error)
       if (Platform.OS === 'web') {
         window.alert('Staff member updated successfully');
       } else {
@@ -120,7 +119,7 @@ export default function UpdateStaffScreen({ route, navigation }) {
             {
               text: 'OK',
               onPress: () => {
-                // Reset navigation stack
+                // reset navigation stack
                 navigation.reset({
                   index: 1,
                   routes: [
@@ -290,7 +289,7 @@ const styles = StyleSheet.create({
       padding: 16,
       borderRadius: 4,
       alignItems: 'center',
-      marginTop: 16,  // Increased from 8 to 16
-      marginBottom: 24  // Added margin bottom
+      marginTop: 16,
+      marginBottom: 24
     }
 });

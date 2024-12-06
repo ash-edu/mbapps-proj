@@ -14,7 +14,6 @@ import { useFontSize } from '../context/FontSizeContext';
 import { staffStorage } from '../services/staffStorage';
 
 export default function AddStaffScreen({ navigation }) {
-  // State setup
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -225,7 +224,7 @@ const styles = StyleSheet.create({
   inputGroup: {
     marginBottom: 16,
   },
-  submitButton: {  // This style applies to both "Add Staff Member" and "Update Details" buttons
+  submitButton: {
     backgroundColor: '#941a1d',
     padding: 16,
     margin: 16,

@@ -199,11 +199,11 @@ const styles = StyleSheet.create({
   updateButton: {
     backgroundColor: '#941a1d',
     padding: 16,
-    margin: 16,  // Consistent 16dp margin all around
+    margin: 16,
     borderRadius: 4,
     alignItems: 'center',
-    marginTop: 40,    // Increased from 8
-    marginBottom: 32, // Added bottom margin
-    marginHorizontal: 16, // Added horizontal margin
+    marginTop: 40,
+    marginBottom: 32,
+    marginHorizontal: 16,
   },
 });
