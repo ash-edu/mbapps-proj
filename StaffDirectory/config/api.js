@@ -8,7 +8,7 @@ export const getApiUrl = () => {
   return API_URL;
 };
 
-export const getDepartments = async () => {
+export const getDepartments = async () => { // dep picker
   try {
       const response = await fetch(`${getApiUrl()}/api/departments`);
       if (!response.ok) {
@@ -20,3 +20,15 @@ export const getDepartments = async () => {
       return [];
   }
 };
+
+/* refs:
+env variables & api urls
+developer.android.com/tools/variables
+stackoverflow.com/questions/51024542/how-to-inject-api-server-url-when-deploying-react-frontend
+stackoverflow.com/questions/28296237/set-android-home-environment-variable-in-mac
+designdebt.club/android-studio-environment-variables-on-mac/
+
+platform module
+reactnative.dev/docs/platform
+detects the platform in which the app is running
+*/
