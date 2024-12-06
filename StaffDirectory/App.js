@@ -3,8 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, Image, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
+import FontSizeControls from './components/FontSizeControls';
+import { FontSizeProvider, useFontSize } from './context/FontSizeContext';
 
-//  screens
 import StaffListScreen from './screens/StaffListScreen';
 import StaffDetailScreen from './screens/StaffDetailScreen';
 import AddStaffScreen from './screens/AddStaffScreen';
@@ -13,6 +14,22 @@ import UpdateStaffScreen from './screens/UpdateStaffScreen';
 const Stack = createNativeStackNavigator();
 
 const LogoTitle = () => {
+  const { fontSizeMultiplier } = useFontSize();
+  
+  const dynamicStyles = {
+    headerText: {
+      color: '#ffffff',
+      fontSize: 20 * fontSizeMultiplier,
+      fontFamily: 'Trebuchet MS',
+      marginLeft: -12,
+    },
+    addButtonText: {
+      color: '#ffffff', 
+      fontSize: 16 * fontSizeMultiplier, 
+      fontFamily: 'Trebuchet MS'
+    }
+  };
+
   return (
     <View style={styles.headerContainer}>
       <Image
@@ -20,7 +37,7 @@ const LogoTitle = () => {
         source={require('./assets/logo.png')}
         resizeMode="contain"
       />
-      <Text style={styles.headerText}>
+      <Text style={dynamicStyles.headerText}>
         Staff Directory
       </Text>
     </View>
@@ -29,6 +46,7 @@ const LogoTitle = () => {
 
 export default function App() {
   return (
+    <FontSizeProvider>
     <NavigationContainer>
       <StatusBar style="light" />
       <Stack.Navigator
@@ -48,6 +66,11 @@ export default function App() {
             paddingLeft: 0,
             marginLeft: -16  // pull content left
           },
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <FontSizeControls />
+            </View>
+            ),
           animation: 'slide_from_right',
           orientation: 'default',
         }}>        
@@ -57,13 +80,10 @@ export default function App() {
           options={({ navigation }) => ({
             title: 'Staff Directory',
             headerRight: () => (
-              <TouchableOpacity
-              onPress={() => navigation.navigate('AddStaff')}
-              style={{ marginRight: 10 }}
-              >
-                <Text style={{ color: '#ffffff', fontSize: 16, fontFamily: 'Trebuchet MS' }}>Add</Text>
-              </TouchableOpacity>
-            ),
+              <View style={{ marginRight: -12 }}>
+                <FontSizeControls />
+               </View>
+              ),
           })}
         />
         <Stack.Screen 
@@ -89,6 +109,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </FontSizeProvider>
   );
 }
 
