@@ -21,3 +21,7 @@ export default function useOrientation() {
 
   return orientation;
 }
+/* refs:
+reactnative.dev/docs/dimensions
+stackoverflow.com/questions/47683591/react-native-different-styles-applied-on-orientation-change
+ */
