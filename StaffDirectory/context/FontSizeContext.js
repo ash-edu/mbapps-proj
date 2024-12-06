@@ -22,7 +22,7 @@ export function FontSizeProvider({ children }) {
     }
   };
 
-  // Load saved font size on app start
+  // load saved font size on app start
   React.useEffect(() => {
     async function loadFontSize() {
       try {
