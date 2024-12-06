@@ -24,7 +24,7 @@ export const staffStorage = {
     // if server fetch fails, get from local storage
     try {
       const storedData = await AsyncStorage.getItem(STAFF_STORAGE_KEY);
-      return storedData ? JSON.parse(storedData) : [];
+      return storedData ? JSON.parse(storedData) : []; // converts back to object
     } catch (error) {
       console.error('Error reading from storage:', error);
       return [];
